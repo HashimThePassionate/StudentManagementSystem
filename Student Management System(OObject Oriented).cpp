@@ -2,23 +2,28 @@
 #include <string>
 #include<cstdlib>
 using namespace std;
-const int MAX_STUDENTS = 2; // Maximum number of students the system can handle
-struct Student {
-    string name;
-    int roll_no;
-    string subject;
-    string section;
-    string address;
-};
-// Function prototypes
-void insert(Student students[], int& num_students);
-void search(const Student students[], int num_students);
-void display(const Student students[], int num_students);
-void deleteRecord(Student students[], int& num_students, int roll_no);
-int main() {
-	system ("color f0");
+const int MAX_STUDENTS = 100; // Maximum number of students the system can handle
+class StudentManagementSystem {
+	private:
+    struct Student {
+        string name;
+        int roll_no;
+        string subject;
+        string section;
+        string address;
+    };
     Student students[MAX_STUDENTS];
-    int num_students = 0;
+    int num_students;
+	public:
+    StudentManagementSystem() : num_students(0) {}
+
+    void run();
+    void insert();
+    void search() const;
+    void display() const;
+    void deleteRecord();
+};
+void StudentManagementSystem::run() {
     char choice;
     do {
         cout << "---------------------------" << endl;
@@ -34,19 +39,16 @@ int main() {
 
         switch (choice) {
             case '1':
-                insert(students, num_students);
+                insert();
                 break;
             case '2':
-                search(students, num_students);
+                search();
                 break;
             case '3':
-                display(students, num_students);
+                display();
                 break;
             case '4':
-                int roll_to_delete;
-                cout << "Enter Roll Number to delete: ";
-                cin >> roll_to_delete;
-                deleteRecord(students, num_students, roll_to_delete);
+                deleteRecord();
                 break;
             case '5':
                 cout << "Exiting the program. Goodbye!" << endl;
@@ -56,11 +58,8 @@ int main() {
                 break;
         }
     } while (choice != '5');
-
-    return 0;
 }
-
-void insert(Student students[], int& num_students) {
+void StudentManagementSystem::insert() {
     if (num_students >= MAX_STUDENTS) {
         cout << "Maximum number of students reached. Cannot insert more records." << endl;
         return;
@@ -81,15 +80,12 @@ void insert(Student students[], int& num_students) {
 
     students[num_students] = new_student;
     num_students++;
-
     cout << "Record inserted successfully!" << endl;
 }
-
-void search(const Student students[], int num_students) {
+void StudentManagementSystem::search() const {
     int roll_to_search;
     cout << "Enter Roll Number to search: ";
     cin >> roll_to_search;
-
     bool found = false;
     for (int i = 0; i < num_students; i++) {
         if (students[i].roll_no == roll_to_search) {
@@ -108,8 +104,7 @@ void search(const Student students[], int num_students) {
         cout << "Record not found for Roll Number: " << roll_to_search << endl;
     }
 }
-
-void display(const Student students[], int num_students) {
+void StudentManagementSystem::display() const {
     if (num_students == 0) {
         cout << "No records found." << endl;
     } else {
@@ -125,12 +120,14 @@ void display(const Student students[], int num_students) {
         }
     }
 }
+void StudentManagementSystem::deleteRecord() {
+    int roll_no;
+    cout << "Enter Roll Number to delete: ";
+    cin >> roll_no;
 
-void deleteRecord(Student students[], int& num_students, int roll_no) {
     bool found = false;
     for (int i = 0; i < num_students; i++) {
         if (students[i].roll_no == roll_no) {
-            // Move the last record to the position of the record to be deleted
             students[i] = students[num_students - 1];
             num_students--;
             found = true;
@@ -142,5 +139,12 @@ void deleteRecord(Student students[], int& num_students, int roll_no) {
     if (!found) {
         cout << "Record not found for Roll Number: " << roll_no << ". Deletion failed." << endl;
     }
+}
+
+int main() {
+	system ("color f0");
+    StudentManagementSystem sms;
+    sms.run();
+    return 0;
 }
 
